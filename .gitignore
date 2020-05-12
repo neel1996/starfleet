@@ -1,0 +1,4 @@
+./starfleet-ui/node_modules
+./starfleet-ui/package-*.json
+
+./starfleet-server/node_modules
