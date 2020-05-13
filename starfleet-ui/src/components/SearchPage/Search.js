@@ -1,24 +1,67 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { NavLink } from "react-router-dom";
+import axios from "axios";
+import React, { useContext, useState, useRef } from "react";
+import { useHistory } from "react-router-dom";
+import { useTransition } from "react-spring";
+import { CHANGE_SHIPNAME } from "../../actionStore";
 import { SearchContext } from "../../context";
 import "./Search.css";
-import SearchSuggestion from "./SearchSuggestion";
-import { CHANGE_SHIPNAME } from "../../actionStore";
+import SearchCard from "./SearchCard";
 
 export default function Search(props) {
-  const [query, setQuery] = useState("");
-
+  const [noResultIndicator, setNoResultIndicator] = useState(false);
   const { state, dispatch } = useContext(SearchContext);
+  const [shipDetails, setShipDetails] = useState([]);
+  const history = useHistory();
 
-  const memoizedSearchSuggestion = useMemo(() => {
-    return <SearchSuggestion text={query}></SearchSuggestion>;
-  }, [query]);
+  const searchRef = useRef();
   
+  function searchHandler(query) {
+    const apiURL = "http://localhost:9001/search";
+
+    axios({
+      url: apiURL,
+      method: "POST",
+      data: {
+        query: `
+          query SearchQuery{
+              searchQuery(shipName: "${query}")
+              {
+                  name
+                  model
+                  image
+              }
+          }
+      `,
+      },
+    })
+      .then((res) => {
+        const searchResults = res.data.data.searchQuery;
+        setNoResultIndicator(false);
+
+        if (
+          searchResults &&
+          searchResults.length > 0 &&
+          !searchResults.errors
+        ) {
+          setShipDetails([...searchResults]);
+          dispatch({ type: CHANGE_SHIPNAME, payload: searchResults[0].name });
+        } else {
+          setShipDetails([]);
+          setNoResultIndicator(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        setNoResultIndicator(true);
+        setShipDetails([]);
+      });
+  }
+
   return (
     <>
       <div className="flex w-full h-screen">
         <div className="block xl:w-1/2 md:w-3/4 sm:w-11/12 w-11/12 mx-auto my-auto">
-          <div className="text-center  mx-auto my-auto">
+          <div className="text-center mx-auto my-auto">
             <div className="search-header text-6xl space-x-1 tracking-widest border-b-2 border-grey-200 border-dotted">
               <span className="text-gray-300">Star</span>
               <span className="text-yellow-500">fleet</span>
@@ -28,20 +71,34 @@ export default function Search(props) {
                 type="text"
                 className="w-full rounded-l-md text-center p-4 outline-none"
                 placeholder="What are you looking for?"
-                onKeyUp={(event) => {
-                  setQuery(event.target.value);
+                ref={searchRef}
+                onChange={(event) => {
+                  searchHandler(event.target.value);
                 }}
               ></input>
-              <NavLink
-                to={
-                  state.shipName ? `/result?${encodeURI(state.shipName)}` : "/"
-                }
+              <div
                 className="w-1/6 bg-yellow-400 text-center p-4 hover:bg-yellow-500 cursor-pointer rounded-r-md font-sans font-semibold"
+                onClick={() => {
+                  history.push("/result");
+                }}
               >
                 Search
-              </NavLink>
+              </div>
             </div>
-            <>{query ? memoizedSearchSuggestion : null}</>
+            <>
+              {shipDetails.length > 0 ? (
+                <>
+                  {shipDetails.map((ship) => {
+                    return <SearchCard ship={ship}></SearchCard>;
+                  })}
+                </>
+              ) : null}
+            </>
+            {noResultIndicator && searchRef.current.value ? (
+              <div className="w-full mx-auto my-4 text-center block p-4 bg-yellow-200 text-yellow-800 rounded-md text-2xl">
+                No Results Found
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
