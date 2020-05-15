@@ -68,7 +68,7 @@ export default function SearchResult(props) {
     return (
       <>
         {shipKeys
-          .filter((item) => item !== "image")
+          .filter((item) => item !== "image" && item !== "name")
           .map((entry) => {
             let label = entry;
 
