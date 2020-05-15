@@ -8,6 +8,15 @@ import { SearchContext } from "../../context";
 import "./Search.css";
 import SearchCard from "./SearchCard";
 
+export function SearchLogo() {
+  return (
+    <div className="search-header text-6xl space-x-1 tracking-widest border-b-2 border-grey-200 border-dotted">
+      <span className="text-gray-300">Star</span>
+      <span className="text-yellow-500">fleet</span>
+    </div>
+  );
+}
+
 export default function Search(props) {
   const [noResultIndicator, setNoResultIndicator] = useState(false);
   const [query, setQuery] = useState("");
@@ -101,10 +110,7 @@ export default function Search(props) {
         <div className="block xl:w-1/2 md:w-3/4 sm:w-11/12 w-11/12 mx-auto my-auto">
           <div className="text-center mx-auto my-auto">
             <animated.div style={spring}>
-              <div className="search-header text-6xl space-x-1 tracking-widest border-b-2 border-grey-200 border-dotted">
-                <span className="text-gray-300">Star</span>
-                <span className="text-yellow-500">fleet</span>
-              </div>
+              {SearchLogo()}
               <div className="flex mx-auto my-auto w-full mt-10 rounded-md shadow-md font-sans text-xl border border-gray-300">
                 <input
                   type="text"

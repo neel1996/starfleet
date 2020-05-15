@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { SearchLogo } from "../SearchPage/Search";
 import { SearchContext } from "../../context";
 
 export default function SearchResult(props) {
@@ -84,13 +85,13 @@ export default function SearchResult(props) {
 
             return (
               <div
-                className="flex mx-auto my-8 w-full text-left justify-around"
+                className="flex mx-auto justify-center my-10 text-center border-b border-dotted border-gray-700"
                 key={entry}
               >
-                <div className="p-1 w-1/3 text-yellow-200 px-10 align-middle items-center">
+                <div className="w-full text-xl my-auto mx-auto rounded-md py-2 px-2 bg-yellow-500 px-10 align-middle items-center">
                   {label}
                 </div>
-                <div className="p-1 w-1/3 bg-white text-gray-600 rounded-md break-words px-10 text-center align-middle my-auto text-lg">
+                <div className="w-full p-1 text-white my-auto mx-auto rounded-md break-words px-10 text-left align-middle my-auto text-lg text-white">
                   {shipDetails[entry]}
                 </div>
               </div>
@@ -102,24 +103,37 @@ export default function SearchResult(props) {
 
   return (
     <>
-      <div className="w-3/4 mx-auto my-6 border border-gray-600 rounded-md">
-        <div className="search-header bg-yellow-500 text-gray-700 p-2 rounded-t-md text-4xl text-center">
-          {shipDetails.name}
+      <div className="p-6 w-1/6 scale-50 mx-auto">
+        <SearchLogo></SearchLogo>
+        <div
+          className="font-sans text-white text-2xl mx-2"
+          style={{ letterSpacing: "5px" }}
+        >
+          SEARCH RESULTS
         </div>
-        <div className="flex">
-          <div
-            className="mx-10 my-20 rounded"
-            style={{
-              backgroundImage: `url('${shipDetails.image}')`,
-              backgroundSize: "100% 100%",
-              backgroundRepeat: "no-repeat",
-              width: "180px",
-              height: "220px",
-            }}
-          ></div>
-
-          <div className="block w-3/4">
-            {shipDetails ? shipDetailLayout() : null}
+      </div>
+      <div className="flex text-center justify-center mx-auto w-full">
+        <div
+          className="w-1/2 mx-10 my-20 rounded-lg border-dotted border-2 border-gray-200"
+          style={{
+            backgroundImage: `url('${shipDetails.image}')`,
+            backgroundSize: "100% 100%",
+            backgroundRepeat: "no-repeat",
+            width: "240px",
+            height: "270px",
+          }}
+        ></div>
+        <div className="my-20 w-1/3">
+          <div className="p-6 border border-2 border-dotted border-gray-100 rounded-md shadow-md">
+            <div className="text-left p-3 bg-yellow-500 rounded-lg w-full">
+              NAME
+            </div>
+            <div className="text-left text-2xl mx-2 text-white font-sans">
+              {shipDetails.name}
+            </div>
+          </div>
+          <div className="w-full h-auto overflow-auto mx-auto justify-center my-3 p-3 border border-2 border-dotted border-gray-100 rounded-md">
+            {shipDetailLayout()}
           </div>
         </div>
       </div>
