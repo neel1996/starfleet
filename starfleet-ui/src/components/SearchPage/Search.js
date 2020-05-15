@@ -10,6 +10,7 @@ import SearchCard from "./SearchCard";
 
 export default function Search(props) {
   const [noResultIndicator, setNoResultIndicator] = useState(false);
+  const [query, setQuery] = useState("");
   const { state, dispatch } = useContext(SearchContext);
   const [shipDetails, setShipDetails] = useState([]);
   const history = useHistory();
@@ -29,14 +30,17 @@ export default function Search(props) {
     shipDetails.length,
     shipDetails.map((item) => ({
       from: {
-        transform: shipDetails[0]
-          ? "translate3d(-150px,0,0) scale(0.5)"
-          : "translate3d(0,0,0) scale(1.0)",
+        transform: "translate3d(0,150px,0) scale(0.3)",
+        opacity: "0",
       },
       to: {
-        transform: shipDetails[0]
-          ? "translate3d(0px,0,0) scale(1.0)"
-          : "translate3d(150px,0,0) scale(0.5)",
+        transform: "translate3d(0,0,0) scale(1.0)",
+        opacity: "1",
+      },
+      config: {
+        duration: 400,
+        tension: 65,
+        friction: 150,
       },
     }))
   );
@@ -49,6 +53,8 @@ export default function Search(props) {
 
   function searchHandler(query) {
     const apiURL = "http://localhost:9001/search";
+
+    setNoResultIndicator(false);
 
     axios({
       url: apiURL,
@@ -106,6 +112,7 @@ export default function Search(props) {
                   placeholder="What are you looking for?"
                   ref={searchRef}
                   onChange={(event) => {
+                    setQuery(event.target.value);
                     searchHandler(event.target.value);
                   }}
                 ></input>
@@ -120,18 +127,19 @@ export default function Search(props) {
               </div>
             </animated.div>
             <>
-              {shipDetails.length > 0 ? (
+              {shipDetails[0] && !noResultIndicator ? (
                 <>
-                  {springs.map((animation, index) => {
-                    return (
-                      <animated.div
-                        style={{ ...animation }}
-                        key={`${shipDetails[index].name}-${uuid()}`}
-                      >
-                        {<SearchCard ship={shipDetails[index]}></SearchCard>}
-                      </animated.div>
-                    );
-                  })}
+                  {shipDetails[0] &&
+                    springs.map((animation, index) => {
+                      return (
+                        <animated.div
+                          style={{ ...animation }}
+                          key={`${shipDetails[index].name}-${uuid()}`}
+                        >
+                          {<SearchCard ship={shipDetails[index]}></SearchCard>}
+                        </animated.div>
+                      );
+                    })}
                 </>
               ) : null}
             </>

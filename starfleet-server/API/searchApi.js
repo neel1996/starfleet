@@ -48,31 +48,11 @@ async function esSearchHandler(shipName) {
         let esResult = res.data.hits.hits.map(entry => entry._source)
 
         return await esResult.map(async (entry) => {
-            entry.image = await fetchBingImage(entry.name)
             return entry
         })
     }).catch(err => {
         console.log("Error : " + err)
     })
-}
-
-async function fetchBingImage(query) {
-
-    // const searchQuery = query + " star wars"
-
-    // return await axios({
-    //     "url": `https://starfleet.cognitiveservices.azure.com/bing/v7.0/images/search?q=${encodeURI(searchQuery)}&count=1`,
-    //     "method": "GET",
-    //     "headers": {
-    //         "Ocp-Apim-Subscription-Key": process.env.BING_API_KEY
-    //     }
-    // }).then(res => {
-    //     return res.data.value[0].contentUrl
-    // }).catch(err => {
-    //     console.log("Error : " + err)
-    // })
-
-    return "https://vignette.wikia.nocookie.net/starwars/images/6/60/Xwing-SWB.jpg/revision/latest/scale-to-width-down/2000?cb=20160704070524"
 }
 
 module.exports = app

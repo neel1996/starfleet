@@ -1,4 +1,6 @@
 ./starfleet-ui/node_modules
 ./starfleet-ui/package-*.json
 
+./starfleet-ui/src/index.css
+
 ./starfleet-server/node_modules

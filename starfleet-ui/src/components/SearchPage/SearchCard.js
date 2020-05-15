@@ -1,10 +1,7 @@
-import React, { useContext, useState } from "react";
-import { animated, useTransition, useSpring } from "react-spring";
-import { v4 as uuid } from "uuid";
-import { SearchContext } from "../../context";
-import { CHANGE_SHIPNAME } from "../../actionStore";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useEffect } from "react";
+import { CHANGE_SHIPNAME } from "../../actionStore";
+import { SearchContext } from "../../context";
 
 export default function SearchCard(props) {
   const { name, model, image } = props.ship;
@@ -12,13 +9,6 @@ export default function SearchCard(props) {
 
   const { state, dispatch } = useContext(SearchContext);
   const history = useHistory();
-
-  // const spring = useSpring({
-  //   transform: animationToggle
-  //     ? "translate3d(0,0,0) scale(1)"
-  //     : "translate3d(-200px,0,0)",
-  //   opacity: animationToggle ? "1.0" : "0.0",
-  // });
 
   useEffect(() => {
     if (props) {
