@@ -103,7 +103,12 @@ export default function SearchResult(props) {
 
   return (
     <>
-      <div className="p-6 w-1/6 scale-50 mx-auto">
+      <div
+        className="p-6 w-1/6 scale-50 mx-auto cursor-pointer"
+        onClick={() => {
+          history.push("/");
+        }}
+      >
         <SearchLogo></SearchLogo>
         <div
           className="font-sans text-white text-2xl mx-2"
