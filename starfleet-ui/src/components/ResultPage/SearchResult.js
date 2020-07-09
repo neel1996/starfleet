@@ -1,8 +1,10 @@
 import axios from "axios";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { SearchLogo } from "../SearchPage/Search";
 import { SearchContext } from "../../context";
+
+import { useSpring, useTrail, useChain, animated } from "react-spring";
 
 export default function SearchResult(props) {
   const apiURL = "http://localhost:9001/search";
@@ -13,6 +15,37 @@ export default function SearchResult(props) {
 
   const [shipDetails, setShipDetails] = useState({});
   const history = useHistory();
+
+  const springRef = useRef();
+  const trailRef = useRef();
+
+  const spring = useSpring({
+    ref: springRef,
+    from: {
+      opacity: 0,
+    },
+    to: {
+      opacity: 1,
+    },
+  });
+
+  const trail = useTrail(Object.keys(shipDetails).length, {
+    ref: trailRef,
+    from: {
+      transform: "translate3d(-150px,0,0) scale(0.2)",
+      opacity: 0,
+    },
+    to: {
+      transform: "translate3d(0,0,0) scale(1)",
+      opacity: 1,
+    },
+    config:{
+      duration: 2500,
+      tension: 430
+    }
+  });
+
+  useChain([trailRef, springRef]);
 
   useEffect(() => {
     if (query) {
@@ -67,10 +100,10 @@ export default function SearchResult(props) {
 
     return (
       <>
-        {shipKeys
-          .filter((item) => item !== "image" && item !== "name")
-          .map((entry) => {
-            let label = entry;
+        {trail.map((animation, index) => {
+          if (shipKeys[index] !== "image" && shipKeys[index] !== "name") {
+            let label = shipKeys[index];
+            let entry = shipKeys[index];
 
             if (entry.includes("_")) {
               const splitKey = entry.split("_");
@@ -84,7 +117,8 @@ export default function SearchResult(props) {
             }
 
             return (
-              <div
+              <animated.div
+                style={{ ...animation, ...spring }}
                 className="flex mx-auto justify-center my-10 text-center border-b border-dotted border-gray-700"
                 key={entry}
               >
@@ -94,9 +128,10 @@ export default function SearchResult(props) {
                 <div className="w-full p-1 text-white my-auto mx-auto rounded-md break-words px-10 text-left align-middle my-auto text-lg text-white">
                   {shipDetails[entry]}
                 </div>
-              </div>
+              </animated.div>
             );
-          })}
+          }
+        })}
       </>
     );
   }

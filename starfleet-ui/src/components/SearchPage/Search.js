@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { animated, useSpring, useSprings } from "react-spring";
+import { animated, useSpring, useSprings, useTrail } from "react-spring";
 import { v4 as uuid } from "uuid";
 import { CHANGE_SHIPNAME } from "../../actionStore";
 import { SearchContext } from "../../context";
@@ -55,15 +55,17 @@ export default function Search(props) {
   );
 
   useEffect(() => {
+    dispatch({ type: CHANGE_SHIPNAME, payload: "" });
+
     return () => {
+      dispatch({ type: CHANGE_SHIPNAME, payload: "" });
       setShipDetails([]);
     };
   }, []);
 
   function searchHandler(query) {
     const apiURL = "http://localhost:9001/search";
-
-    setNoResultIndicator(false);
+    dispatch({ type: CHANGE_SHIPNAME, payload: "" });
 
     axios({
       url: apiURL,
