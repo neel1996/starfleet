@@ -5,7 +5,7 @@
 ![STARFLEET](https://i.imgur.com/T7WRiXc.png)
 
 Run the following to generate the tailwind css file
-`npx tailwindcss build ./starfleet-ui/src/tailwind.css -o ./starfleet-ui/src/index.css`
+`npx tailwindcss build -o ./starfleet-ui/src/index.css`
 
 ### Dependencies
 All the required dependencies are included in the package.json file for both frontend (-ui) and backend (-server). 
