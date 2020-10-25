@@ -5,6 +5,9 @@
 ![STARFLEET](https://i.imgur.com/T7WRiXc.png)
 
 Run the following to generate the tailwind css file
+## for v1.6.0+
+`npx tailwindcss build -o ./starfleet-ui/src/index.css`
+## older than v1.6.0
 `npx tailwindcss build ./starfleet-ui/src/tailwind.css -o ./starfleet-ui/src/index.css`
 
 ### Dependencies
