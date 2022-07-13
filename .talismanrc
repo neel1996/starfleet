@@ -1,4 +1,0 @@
-fileignoreconfig:
-- filename: starfleet-ui/yarn.lock
-  checksum: 44d309b48da970a0419334a267073a186f73442b19b0a444ed8e6848a575bd55
-version: "1.0"

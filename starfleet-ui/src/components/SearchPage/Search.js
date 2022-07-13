@@ -61,7 +61,7 @@ export default function Search(props) {
   }, []);
 
   function searchHandler(query) {
-    const apiURL = "http://localhost:8080/search";
+    const apiURL = "http://localhost:9001/search";
 
     setNoResultIndicator(false);
 
@@ -69,16 +69,29 @@ export default function Search(props) {
       url: apiURL,
       method: "POST",
       data: {
-        shipName: query,
+        query: `
+          query SearchQuery{
+              searchQuery(shipName: "${query}")
+              {
+                  name
+                  model
+                  image
+              }
+          }
+      `,
       },
     })
       .then((res) => {
-        const searchResults = res.data;
+        const searchResults = res.data.data.searchQuery;
         setNoResultIndicator(false);
 
-        if (searchResults && !searchResults.errors) {
-          setShipDetails([searchResults]);
-          dispatch({ type: CHANGE_SHIPNAME, payload: searchResults.name });
+        if (
+          searchResults &&
+          searchResults.length > 0 &&
+          !searchResults.errors
+        ) {
+          setShipDetails([...searchResults]);
+          dispatch({ type: CHANGE_SHIPNAME, payload: searchResults[0].name });
         } else {
           setShipDetails([]);
           setNoResultIndicator(true);
@@ -106,12 +119,13 @@ export default function Search(props) {
                   ref={searchRef}
                   onChange={(event) => {
                     setQuery(event.target.value);
+                    searchHandler(event.target.value);
                   }}
                 ></input>
                 <div
                   className="w-1/6 bg-yellow-400 text-center p-4 hover:bg-yellow-500 cursor-pointer rounded-r-md font-sans font-semibold"
                   onClick={() => {
-                    searchHandler(query);
+                    history.push("/result");
                   }}
                 >
                   Search
