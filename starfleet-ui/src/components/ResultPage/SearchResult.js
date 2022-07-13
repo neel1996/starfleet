@@ -5,7 +5,7 @@ import { SearchLogo } from "../SearchPage/Search";
 import { SearchContext } from "../../context";
 
 export default function SearchResult(props) {
-  const apiURL = "http://localhost:9001/search";
+  const apiURL = "http://localhost:8080/search";
 
   const { state, dispatch } = useContext(SearchContext);
 
@@ -20,38 +20,14 @@ export default function SearchResult(props) {
         url: apiURL,
         method: "POST",
         data: {
-          query: `
-                        query SearchQuery{
-                            searchQuery(shipName: "${query}")
-                            {
-                                name
-                                model
-                                manufacturer
-                                cost_in_credits
-                                length
-                                max_atmosphering_speed
-                                crew
-                                passengers
-                                cargo_capacity
-                                consumables
-                                hyperdrive_rating
-                                MGLT
-                                starship_class
-                                image
-                            }
-                        }
-                    `,
+          shipName: query.toLowerCase(),
         },
       })
         .then((res) => {
-          const searchResults = res.data.data.searchQuery;
+          const searchResults = res.data;
 
-          if (
-            searchResults &&
-            searchResults.length > 0 &&
-            !searchResults.errors
-          ) {
-            setShipDetails(...searchResults);
+          if (searchResults && !searchResults.errors) {
+            setShipDetails(searchResults);
           }
         })
         .catch((err) => {
